@@ -5,9 +5,9 @@ import { Box } from "@mui/material";
 
 const page = () => {
   return (
-    <Box sx={{  height: 600,gap: 3 }}>
+    <Box sx={{  height: 800,gap: 3 }}>
     <Navbar />
-    <Box sx={{fontFamily : "monospace",fontSize : 48,fontWeight : "bold",display : "flex",justifyContent : "center",mt: 3}}>Sign In</Box>
+    <Box sx={{fontFamily : "monospace",fontSize : 48,fontWeight : "bold",display : "flex",justifyContent : "center",m: 3}}>Sign In</Box>
       <Box
         sx={{
           display: "flex",
@@ -15,7 +15,7 @@ const page = () => {
           alignItems: "center",
           alignContent : "center",
         //   border : 4,
-          height : "60%"
+          // height : "60%"
         }}
       >
         <Form />

@@ -65,7 +65,7 @@ const Post = () => {
 
   return (
     <Box
-      sx={{ display: "flex",alignItems : "center",p : 4, height: 600, flexDirection: "column", gap: 4 }}
+      sx={{ display: "flex",alignItems : "center",p : 4, height: 800, flexDirection: "column", gap: 4 }}
     >
       <Box sx={{mt : 6, fontSize: 48, fontWeight: 32 }}>POST DETAILS</Box>
       <Box sx={{}}>
