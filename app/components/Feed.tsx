@@ -2,12 +2,13 @@
 import * as React from "react";
 import { IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
-import { Avatar } from "@mui/material";
+// import FormLabel from "@mui/material/FormLabel";
+// import FormControl from "@mui/material/FormControl";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import RadioGroup from "@mui/material/RadioGroup";
+// import Radio from "@mui/material/Radio";
+// import { Avatar } from "@mui/material";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { AccountCircle } from "@mui/icons-material";
 // import ImageComponent from "./ImageComponent";
 
@@ -32,7 +33,9 @@ import { Box } from "@mui/material";
 </ImageList> */
 }
 
+
 export default function Feed() {
+  const { user, error, isLoading } = useUser();
   const [spacing, setSpacing] = React.useState(2);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +48,7 @@ export default function Feed() {
 
   return (
     <>
+        <Box sx={{fontWeight : 64,fontSize : 48,display : "flex",justifyContent : "center",p : 6,w : "100%"}}>WELCOME {user?.name?.toUpperCase()}</Box>
       <Grid sx={{ flexGrow: 1, pt: 4 }} container spacing={2}>
         <Grid item xs={12}>
           <Grid container justifyContent="center" spacing={spacing}>

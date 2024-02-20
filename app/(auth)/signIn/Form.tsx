@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import {
   FormControl,
@@ -30,7 +30,7 @@ const Form = () => {
         flexDirection: "column",
         gap: 2,
         backgroundColor: "white",
-        borderRadius : 2,
+        borderRadius: 2,
         border: 1,
         p: 4,
       }}
@@ -61,7 +61,9 @@ const Form = () => {
         Choose Cover Pic
         <VisuallyHiddenInput type="file" />
       </Button>
-      <Button color="success">Submit</Button>
+      <a href="/api/auth/login">
+        <Button color="success">LogIn</Button>
+      </a>
     </Box>
   );
 };

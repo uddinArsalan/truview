@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 const page = () => {
   return (
     <Box sx={{  height: 800,gap: 3 }}>
-    <Navbar />
+    {/* <Navbar /> */}
     <Box sx={{fontFamily : "monospace",fontSize : 48,fontWeight : "bold",display : "flex",justifyContent : "center",m: 3}}>Sign In</Box>
       <Box
         sx={{
