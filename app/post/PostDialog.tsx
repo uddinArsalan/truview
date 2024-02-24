@@ -7,12 +7,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-// import Image from "next/image";
 import image from "../../public/assets/gallery.png";
 import { TransitionProps } from "@mui/material/transitions";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Image from "next/image";
+import axios from "axios";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { Avatar } from "@mui/material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,6 +40,25 @@ const Transition = React.forwardRef(function Transition(
 export default function PostDialog() {
   const [open, setOpen] = React.useState(false);
   const [selectedImg, setSelectedImg] = React.useState<string | null>(null);
+  const { user } = useUser();
+  // console.log(user?.sub);
+  const getData = async () => {
+    const user_Id = user?.sub;
+    try {
+      const res = await axios.patch(
+        "http://localhost:3000/api/auth/profileUpdate",
+        { selectedImg, user_Id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Profile pic updated", res.data);
+    } catch (error) {
+      console.log("Error updating profile picture", error);
+    }
+  };
 
   const handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
     // Change ChangeEvent to FormEvent
@@ -63,6 +84,11 @@ export default function PostDialog() {
 
   return (
     <React.Fragment>
+      <div onClick={getData}>Click</div>
+      <Avatar
+        alt="profile pic"
+        src={user?.picture || ""}
+      />
       <Button variant="outlined" onClick={handleClickOpen}>
         Add Photo
       </Button>

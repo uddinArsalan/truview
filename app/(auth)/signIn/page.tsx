@@ -1,6 +1,5 @@
 import React from "react";
-import Navbar from "@/app/components/Navbar";
-import Form from "./Form";
+import Form from "./Form";;
 import { Box } from "@mui/material";
 
 const page = () => {

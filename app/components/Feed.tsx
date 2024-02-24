@@ -33,7 +33,6 @@ import { Box } from "@mui/material";
 </ImageList> */
 }
 
-
 export default function Feed() {
   const { user, error, isLoading } = useUser();
   const [spacing, setSpacing] = React.useState(2);
@@ -48,8 +47,20 @@ export default function Feed() {
 
   return (
     <>
-        <Box sx={{fontWeight : 64,fontSize : 48,display : "flex",justifyContent : "center",p : 6,w : "100%"}}>WELCOME {user?.name?.toUpperCase()}</Box>
-      <Grid sx={{ flexGrow: 1, pt: 4 }} container spacing={2}>
+      <Box
+        sx={{
+          fontWeight: "bold",
+          fontSize: 32,
+          display: "flex",
+          justifyContent: "center",
+          p: 4,
+          w: "100%",
+          wordWrap : "break-word"
+        }}
+      >
+        WELCOME {user?.name?.toUpperCase()}
+      </Box>
+      <Grid sx={{ flexGrow: 1 }} container spacing={2}>
         <Grid item xs={12}>
           <Grid container justifyContent="center" spacing={spacing}>
             {[0, 1, 2, 3, 4, 5].map((value, index) => (
@@ -94,8 +105,8 @@ export default function Feed() {
                     sx={{
                       display: "flex",
                       // gap : 2,
-                      p : 1,
-                      pb : 0,
+                      p: 1,
+                      pb: 0,
                       // border : 2,
                       justifyContent: "space-between",
                       alignItems: "center",
@@ -106,14 +117,18 @@ export default function Feed() {
                     <IconButton
                       sx={{
                         display: "flex",
-                        p : 2,
-                        gap : 1,
+                        p: 2,
+                        gap: 1,
                       }}
                     >
-                      <FavoriteBorderIcon sx={{ cursor: "pointer" , "&:hover": { color: "red" }}} />
-                      <ChatBubbleOutlineIcon sx={{ cursor: "pointer" , "&:hover": { color: "blue" }}} />
+                      <FavoriteBorderIcon
+                        sx={{ cursor: "pointer", "&:hover": { color: "red" } }}
+                      />
+                      <ChatBubbleOutlineIcon
+                        sx={{ cursor: "pointer", "&:hover": { color: "blue" } }}
+                      />
                     </IconButton>
-                    <AccountCircle sx={{ml : 2}}/>
+                    <AccountCircle sx={{ ml: 2 }} />
                     {/* <Avatar
                       alt="Remy Sharp"
                       src={`/static/images/avatar/${index}.jpg`}

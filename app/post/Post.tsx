@@ -67,11 +67,11 @@ const Post = () => {
     <Box
       sx={{ display: "flex",alignItems : "center",p : 4, height: 800, flexDirection: "column", gap: 4 }}
     >
-      <Box sx={{mt : 6, fontSize: 48, fontWeight: 32 }}>POST DETAILS</Box>
+      <Box sx={{mt : 6, fontSize: 48, fontWeight: "bold" }}>POST DETAILS</Box>
       <Box sx={{}}>
         <Textarea
           aria-label="minimum height"
-          minRows={5}
+          minRows={6}
           placeholder="Add Description"
         />
       </Box>

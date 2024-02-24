@@ -7,16 +7,23 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { Tooltip } from "@mui/material";
 import { Button } from "@mui/material";
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from "@auth0/nextjs-auth0/client";
+import Drawer from "@mui/material/Drawer";
 import { Avatar, Badge, MenuItem, Menu } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import NavMenu from "./NavMenu";
 import Link from "next/link";
 
 export default function Navbar() {
-  const settings = ["Account", "Dashboard", "Logout"];
+  const settings = ["Dashboard", "Logout"];
   const pages = ["Home", "Post", "About Us", "Sign In"];
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -26,9 +33,6 @@ export default function Navbar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
-  // const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-  //     setAnchorElNav(event.currentTarget);
-  //   };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -88,10 +92,20 @@ export default function Navbar() {
   );
 
   const { user, error, isLoading } = useUser();
+  // <Button onClick={toggleDrawer(true)}>Open drawer</Button>
+  //     <Drawer open={open} onClose={toggleDrawer(false)}>
+  //       {DrawerList}
+  //     </Drawer>
 
   // if (isLoading) return <div>Loading...</div>;
   // if (error) return <div>{error.message}</div>;
-  console.log(user?.name,user?.email)
+  // console.log(user?.name, user?.email,user?.org_id,user?.picture);
+
+  // page == "Sign In"
+  //                     ? "/signIn"
+  //                     : page == "Post"
+  //                     ? "/post"
+  //                     : ""
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -103,6 +117,7 @@ export default function Navbar() {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
+            onClick={toggleDrawer(true)}
           >
             <MenuIcon sx={{ display: { xs: "flex", md: "none" } }} />
           </IconButton>
@@ -127,11 +142,13 @@ export default function Navbar() {
               >
                 <Link
                   href={
-                    page == "Sign In"
+                    page == "Home"
+                      ? "/"
+                      : page == "About Us"
+                      ? "/about_us"
+                      : page == "Sign In"
                       ? "/signIn"
-                      : page == "Post"
-                      ? "/post"
-                      : ""
+                      : "/post"
                   }
                 >
                   {page}
@@ -153,7 +170,10 @@ export default function Navbar() {
             </IconButton>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 1 }}>
-                {user && <Avatar alt="Remy Sharp" src={user.picture || "/static/images/avatar/2.jpg"} />}
+                <Avatar
+                  alt="Remy Sharp"
+                  src={user?.picture || "/static/images/avatar/2.jpg"}
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -174,7 +194,7 @@ export default function Navbar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center"><Link href={`/${setting.toLowerCase()}`}>{setting}</Link></Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -194,6 +214,9 @@ export default function Navbar() {
           </Box>
         </Toolbar>
       </AppBar>
+      <Drawer open={open} onClose={toggleDrawer(false)}>
+        <NavMenu open={open} toggleDrawer={toggleDrawer} />
+      </Drawer>
       {renderMobileMenu}
     </Box>
   );

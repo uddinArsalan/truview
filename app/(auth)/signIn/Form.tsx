@@ -35,7 +35,7 @@ const Form = () => {
         p: 4,
       }}
     >
-      <FormControl>
+      {/* <FormControl>
         <InputLabel htmlFor="email">Email</InputLabel>
         <OutlinedInput
           id="email"
@@ -60,7 +60,7 @@ const Form = () => {
       >
         Choose Cover Pic
         <VisuallyHiddenInput type="file" />
-      </Button>
+      </Button> */}
       <a href="/api/auth/login">
         <Button color="success">LogIn</Button>
       </a>
