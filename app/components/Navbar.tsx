@@ -86,7 +86,7 @@ export default function Navbar() {
         <IconButton sx={{ p: 1 }}>
           <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
         </IconButton>
-        <p>Username</p>
+        <p>Dashboard</p>
       </MenuItem>
     </Menu>
   );
@@ -194,7 +194,15 @@ export default function Navbar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center"><Link href={`/${setting.toLowerCase()}`}>{setting}</Link></Typography>
+                  {setting == "Dashboard" ? (
+                    <Link href={`/${setting.toLowerCase()}`}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </Link>
+                  ) : (
+                    <a href="/api/auth/logout">
+                      <Typography textAlign="center">{setting}</Typography>
+                    </a>
+                  )}
                 </MenuItem>
               ))}
             </Menu>

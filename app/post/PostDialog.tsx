@@ -12,9 +12,6 @@ import { TransitionProps } from "@mui/material/transitions";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Image from "next/image";
-import axios from "axios";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { Avatar } from "@mui/material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -39,38 +36,43 @@ const Transition = React.forwardRef(function Transition(
 
 export default function PostDialog() {
   const [open, setOpen] = React.useState(false);
-  const [selectedImg, setSelectedImg] = React.useState<string | null>(null);
-  const { user } = useUser();
-  // console.log(user?.sub);
-  const getData = async () => {
-    const user_Id = user?.sub;
-    try {
-      const res = await axios.patch(
-        "http://localhost:3000/api/auth/profileUpdate",
-        { selectedImg, user_Id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Profile pic updated", res.data);
-    } catch (error) {
-      console.log("Error updating profile picture", error);
-    }
-  };
+  // const [selectedImg, setSelectedImg] = React.useState<string | Blob>("");
 
-  const handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
+  //   const reader = new FileReader();
+
+  //   reader.onload = (e) => {
+  //     setSelectedImg(e.target?.result as string);
+  //   };
+
+  //   reader.readAsDataURL(file);
+
+  const handleImageChange = async (e: React.FormEvent<HTMLInputElement>) => {
     // Change ChangeEvent to FormEvent
     if (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) {
       const file = e.currentTarget.files[0];
-      const reader = new FileReader();
+      const formData = new FormData();
+      formData.append("image", file);
 
-      reader.onload = (e) => {
-        setSelectedImg(e.target?.result as string);
-      };
+      // Iterate over the formData entries
+      // for (const [key, value] of formData.entries()) {
+      //   console.log(key, value);
+      // }
+      try {
+        const response = await fetch("http://localhost:3000/api/uploadImage", {
+          method: "POST",
+          body: formData,
+        });
 
-      reader.readAsDataURL(file);
+        if (response.ok) {
+          const imageUrl = await response.json(); // This should be the URL where the image is stored
+          console.log("Image uploaded successfully:", imageUrl);
+          // Set the image URL in your component state or display it in your application
+        } else {
+          console.error("Error uploading image:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
     }
   };
 
@@ -84,11 +86,6 @@ export default function PostDialog() {
 
   return (
     <React.Fragment>
-      <div onClick={getData}>Click</div>
-      <Avatar
-        alt="profile pic"
-        src={user?.picture || ""}
-      />
       <Button variant="outlined" onClick={handleClickOpen}>
         Add Photo
       </Button>
@@ -129,14 +126,14 @@ export default function PostDialog() {
                 onChange={(e) => handleImageChange(e)}
               />
             </Button>
-            {selectedImg && (
+            {/* {selectedImg && (
               <Image
-                src={selectedImg}
+                src={selectedImg as string}
                 alt="selectedImg"
                 width={56}
                 height={56}
               />
-            )}
+            )} */}
           </DialogContentText>
         </DialogContent>
 
@@ -144,9 +141,7 @@ export default function PostDialog() {
           <Button color="error" onClick={handleClose}>
             Cancel
           </Button>
-          <Button color="success" onClick={handleClose}>
-            Post
-          </Button>
+          <Button color="success">Post</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
