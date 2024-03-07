@@ -36,54 +36,50 @@ const Transition = React.forwardRef(function Transition(
 
 export default function PostDialog() {
   const [open, setOpen] = React.useState(false);
-  // const [selectedImg, setSelectedImg] = React.useState<string | Blob>("");
+  const [selectedFile, setSelectedFile] = React.useState<string | Blob>("");
+  const postImage = async () => {
+    const formData = new FormData();
+    formData.append("image", selectedFile);
 
-  //   const reader = new FileReader();
+    try {
+      const response = await fetch("http://localhost:3000/api/uploadImage", {
+        method: "POST",
+        body: formData,
+      });
 
-  //   reader.onload = (e) => {
-  //     setSelectedImg(e.target?.result as string);
-  //   };
-
-  //   reader.readAsDataURL(file);
-
-  const handleImageChange = async (e: React.FormEvent<HTMLInputElement>) => {
-    // Change ChangeEvent to FormEvent
-    if (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) {
-      const file = e.currentTarget.files[0];
-      const formData = new FormData();
-      formData.append("image", file);
-
-      // Iterate over the formData entries
-      // for (const [key, value] of formData.entries()) {
-      //   console.log(key, value);
-      // }
-      try {
-        const response = await fetch("http://localhost:3000/api/uploadImage", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (response.ok) {
-          const imageUrl = await response.json(); // This should be the URL where the image is stored
-          console.log("Image uploaded successfully:", imageUrl);
-          // Set the image URL in your component state or display it in your application
-        } else {
-          console.error("Error uploading image:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error uploading image:", error);
+      if (response.ok) {
+        const imageUrl = await response.json(); // This should be the URL where the image is stored
+        console.log("Image uploaded successfully:", imageUrl);
+        // Set the image URL in your component state or display it in your application
+      } else {
+        console.error("Error uploading image:", response.statusText);
       }
+    } catch (error) {
+      console.error("Error uploading image:", error);
     }
   };
+
+  const handleImageChange = async (e: React.FormEvent<HTMLInputElement>) => {
+    if (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) {
+      const file = e.currentTarget.files[0];
+      setSelectedFile(file);
+    }
+  };
+
+  const convertImgUrl = (selectedfile : Blob) => {
+    const blob = new Blob([selectedfile]);
+    const imageUrl = URL.createObjectURL(blob);
+    return imageUrl;
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -94,7 +90,7 @@ export default function PostDialog() {
         maxWidth="xs"
         TransitionComponent={Transition}
         keepMounted
-        sx={{ backgroundImage: `url(${image})` }}
+        // sx={{ backgroundImage: `url(${image})` }}
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
@@ -123,17 +119,19 @@ export default function PostDialog() {
               Choose Pic
               <VisuallyHiddenInput
                 type="file"
+                name="image"
                 onChange={(e) => handleImageChange(e)}
               />
             </Button>
-            {/* {selectedImg && (
+            {selectedFile && (
               <Image
-                src={selectedImg as string}
+                src={convertImgUrl(selectedFile as Blob)}
                 alt="selectedImg"
                 width={56}
+                style={{objectFit : "cover"}}
                 height={56}
               />
-            )} */}
+            )}
           </DialogContentText>
         </DialogContent>
 
@@ -141,7 +139,9 @@ export default function PostDialog() {
           <Button color="error" onClick={handleClose}>
             Cancel
           </Button>
-          <Button color="success">Post</Button>
+          <Button color="success" onClick={postImage}>
+            Post
+          </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

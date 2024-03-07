@@ -70,8 +70,10 @@ const Post = () => {
       <Box sx={{mt : 6, fontSize: 48, fontWeight: "bold" }}>POST DETAILS</Box>
       <Box sx={{}}>
         <Textarea
-          aria-label="minimum height"
+          aria-label="description"
+          color="primary"
           minRows={6}
+          sx={{ p : 2 }}
           placeholder="Add Description"
         />
       </Box>
