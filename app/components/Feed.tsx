@@ -10,28 +10,16 @@ import Grid from "@mui/material/Grid";
 // import { Avatar } from "@mui/material";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { AccountCircle } from "@mui/icons-material";
+import LikeButton from "./LikeButton";
 // import ImageComponent from "./ImageComponent";
 
 import Image from "next/image";
 import Paper from "@mui/material/Paper";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box } from "@mui/material";
 // import HighlightedCode from 'docs/src/modules/components/HighlightedCode';
-{
-  /* <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-{itemData.map((item) => (
-  <ImageListItem key={item.img}>
-    <img
-      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-      alt={item.title}
-      loading="lazy"
-    />
-  </ImageListItem>
-))}
-</ImageList> */
-}
 
 export default function Feed() {
   const { user, error, isLoading } = useUser();
@@ -55,7 +43,7 @@ export default function Feed() {
           justifyContent: "center",
           p: 4,
           w: "100%",
-          wordWrap : "break-word"
+          wordWrap: "break-word",
         }}
       >
         WELCOME {user?.name?.toUpperCase()}
@@ -63,38 +51,32 @@ export default function Feed() {
       <Grid sx={{ flexGrow: 1 }} container spacing={2}>
         <Grid item xs={12}>
           <Grid container justifyContent="center" spacing={spacing}>
-            {[0, 1, 2, 3, 4, 5].map((value, index) => (
+            {[16, 27, 32, 45, 7, 9, 237, 58].map((value, index) => (
               <Grid key={value} item>
                 <Paper
                   sx={{
                     height: 300,
                     width: 300,
                     display: "flex",
-                    // gap: 2,
                     flexDirection: "column",
-                    // zIndex: 0,
-                    // alignItems: "center" ,
-                    // justifyContent: "center",
                     backgroundColor: (theme) =>
                       theme.palette.mode === "dark" ? "#1A2027" : "#fff",
                   }}
                 >
                   <Image
-                    src={`https://source.unsplash.com/1000x1200/?landscape&n=${index}`}
+                    src={`https://source.unsplash.com/1000x1200/?movies&n=${index}`}
                     width={300}
                     height={200}
-                    // fill={true}
+                    style={{ objectFit: "cover" }}
                     className="rounded-md"
                     alt="Hero Image"
                   />
                   <Box
                     sx={{
                       p: 2,
-                      // border : 1,
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
-                      // zIndex: 2,
                     }}
                   >
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -104,30 +86,24 @@ export default function Feed() {
                   <Box
                     sx={{
                       display: "flex",
-                      // gap : 2,
                       p: 1,
                       pb: 0,
-                      // border : 2,
                       justifyContent: "space-between",
                       alignItems: "center",
-                      // zIndex: 1,
-                      // height: "100%",
                     }}
                   >
-                    <IconButton
+                    <Box
                       sx={{
                         display: "flex",
                         p: 2,
-                        gap: 1,
+                        gap: 3,
                       }}
                     >
-                      <FavoriteBorderIcon
-                        sx={{ cursor: "pointer", "&:hover": { color: "red" } }}
-                      />
+                      <LikeButton value={value}/>
                       <ChatBubbleOutlineIcon
                         sx={{ cursor: "pointer", "&:hover": { color: "blue" } }}
                       />
-                    </IconButton>
+                    </Box>
                     <AccountCircle sx={{ ml: 2 }} />
                     {/* <Avatar
                       alt="Remy Sharp"

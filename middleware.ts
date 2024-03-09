@@ -11,7 +11,7 @@ export const config = {
      * - favicon.ico (favicon file)
      * - $ (homepage)
      */                                           
-    '/((?!api|_next/static|_next/image|favicon.ico|$).*)',
+    // '/((?!api|_next/static|_next/image|favicon.ico|$).*)',
   ],
 };
 export default withMiddlewareAuthRequired();
