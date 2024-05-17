@@ -12,11 +12,14 @@ const b2 = new B2({
   
 });
 
-export async function POST(req: NextRequest, res: NextResponse, next: any) {
-  console.log(BACKBLAZE_APP_KEY, BACKBLAZE_BUCKET_ID, BACKBLAZE_KEY_ID);
+export async function POST(req: NextRequest,{ params }: { params: { slug: string } }) {
+  // console.log(BACKBLAZE_APP_KEY, BACKBLAZE_BUCKET_ID, BACKBLAZE_KEY_ID);
   try {
-    const formData = await req.formData();
-    const file: File | null = formData.get("image") as unknown as File;
+    const directory = params.slug 
+    const formData = await req.formData()
+    console.log(directory)
+    const formKey = directory == "CoverImages" ? "cover-image" : "image";
+    const file: File | null = formData.get(formKey) as unknown as File;
     sanitize(file.name);
 
     // converting file into buffer
@@ -34,26 +37,27 @@ export async function POST(req: NextRequest, res: NextResponse, next: any) {
       uploadUrl: uploadData.uploadUrl,
       uploadAuthToken: uploadData.authorizationToken,
       data: buffer,
-      // there are no real directories in b2, if you want to place
-      // your file in a folder structure, do so with slashes. ex:
-      //   fileName: `/my-subfolder/uploads/${fileName}`
-      fileName: `uploads/${file.name}`,
+    //   // there are no real directories in b2, if you want to place
+    //   // your file in a folder structure, do so with slashes. ex:
+    //   //   fileName: `/my-subfolder/uploads/${fileName}`
+      fileName: `${directory}/${file.name}`,
       // info: {}, // store optional info, like original file name
     });
     // console.log("After uploaded Data", data);
     // const d = await b2.getBucket()
     // const bucketName = authData.allowed.bucketName;
-    const downloadURL = authData.downloadUrl;
-    const {data : bucketsList} = await b2.listBuckets();
-    const bucketName = bucketsList.buckets[0].bucketName;
+    // const downloadURL = authData.downloadUrl;
+    // const {data : bucketsList} = await b2.listBuckets();
+    // const bucketName = bucketsList.buckets[0].bucketName;
     // console.log("Bucket list",bucketsList.buckets)
 
-    console.log("Bucket Name", bucketName);
-    console.log("Download URl Name", downloadURL);
+    // console.log("Bucket Name", bucketName);
+    // console.log("Download URl Name", downloadURL);
 
     return NextResponse.json({
       // add timestamp to url to force re-fetching images with the same src
-      url: `${downloadURL}/file/${bucketName}/${data.fileName}?timestamp=${data.uploadTimestamp}`,
+      // url: `${downloadURL}/file/${bucketName}/${data.fileName}?timestamp=${data.uploadTimestamp}`,
+      url: `https://truview-backblaze-proxy.uddinarsalan91.workers.dev/${data.fileName}?timestamp=${data.uploadTimestamp}`,
     });
   } catch (error) {
     return NextResponse.json(

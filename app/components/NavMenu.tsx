@@ -12,8 +12,6 @@ import Link from "next/link";
 // import { getSession } from '@auth0/nextjs-auth0';
 
 export default function NavMenu({ open, toggleDrawer }: any) {
-  // const { user } = await getSession();
-  // console.log(user)
 
   return (
     <Box

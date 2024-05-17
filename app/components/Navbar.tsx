@@ -1,11 +1,12 @@
 "use client";
 import * as React from "react";
+import { styled, useTheme } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Zoom } from "@mui/material";
 import { Button } from "@mui/material";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Drawer from "@mui/material/Drawer";
@@ -15,6 +16,35 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import NavMenu from "./NavMenu";
 import Link from "next/link";
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    backgroundColor: theme.palette.error.main,
+    color: theme.palette.error.contrastText,
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}));
 
 export default function Navbar() {
   const settings = ["Dashboard", "Logout"];
@@ -53,7 +83,6 @@ export default function Navbar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  // /static/images/avatar/2.jpg
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -76,9 +105,9 @@ export default function Navbar() {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          <StyledBadge badgeContent={17} color="error">
             <NotificationsIcon />
-          </Badge>
+          </StyledBadge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
@@ -92,20 +121,7 @@ export default function Navbar() {
   );
 
   const { user, error, isLoading } = useUser();
-  // <Button onClick={toggleDrawer(true)}>Open drawer</Button>
-  //     <Drawer open={open} onClose={toggleDrawer(false)}>
-  //       {DrawerList}
-  //     </Drawer>
-
-  // if (isLoading) return <div>Loading...</div>;
-  // if (error) return <div>{error.message}</div>;
-  // console.log(user?.name, user?.email,user?.org_id,user?.picture);
-
-  // page == "Sign In"
-  //                     ? "/signIn"
-  //                     : page == "Post"
-  //                     ? "/post"
-  //                     : ""
+  const theme = useTheme();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -126,7 +142,14 @@ export default function Navbar() {
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: { sm: "flex" } }}
+              sx={{
+                display: { sm: "flex" },
+                fontWeight: "bold",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.1)",
+                },
+              }}
             >
               TRUVIEW
             </Typography>
@@ -138,14 +161,23 @@ export default function Navbar() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "flex" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "flex",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                    backgroundColor: theme.palette.primary.light,
+                  },
+                }}
               >
                 <Link
                   href={
                     page == "Home"
                       ? "/"
                       : page == "About Us"
-                      ? "/about_us"
+                      ? "/aboutus"
                       : page == "Sign In"
                       ? "/signIn"
                       : "/post"
@@ -164,9 +196,11 @@ export default function Navbar() {
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
+              <Zoom in={true}>
+                <StyledBadge badgeContent={17} color="error">
+                  <NotificationsIcon />
+                </StyledBadge>
+              </Zoom>
             </IconButton>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 1 }}>
@@ -193,19 +227,29 @@ export default function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  {setting == "Dashboard" ? (
-                    <Link href={`/${setting.toLowerCase()}`}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </Link>
-                  ) : (
-                    <a href="/api/auth/logout">
-                      <Typography textAlign="center">{setting}</Typography>
-                    </a>
-                  )}
-                </MenuItem>
-              ))}
-            </Menu>
+    <MenuItem
+      key={setting}
+      onClick={handleCloseUserMenu}
+      sx={{
+        transition: "all 0.3s ease",
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transform: "scale(1.1)",
+        },
+      }}
+    >
+      {setting == "Dashboard" ? (
+        <Link href={`/${setting.toLowerCase()}`}>
+          <Typography textAlign="center">{setting}</Typography>
+        </Link>
+      ) : (
+        <a href="/api/auth/logout">
+          <Typography textAlign="center">{setting}</Typography>
+        </a>
+      )}
+    </MenuItem>
+  ))}
+</Menu>
           </Box>
 
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -222,8 +266,21 @@ export default function Navbar() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        <NavMenu open={open} toggleDrawer={toggleDrawer} />
+      <Drawer
+        open={open}
+        onClose={toggleDrawer(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+          },
+        }}
+      >
+        <NavMenu
+          open={open}
+          toggleDrawer={toggleDrawer}
+          menuColor={theme.palette.primary.contrastText}
+        />
       </Drawer>
       {renderMobileMenu}
     </Box>

@@ -1,26 +1,33 @@
+"use client"
 import React from "react";
-import Form from "./Form";;
-import { Box } from "@mui/material";
+import Form from "./Form";
+import { Box ,Typography,useTheme} from "@mui/material";
 
-const page = () => {
+const SignInPage = () => {
+  const theme = useTheme();
   return (
-    <Box sx={{  height: 800,gap: 3 }}>
-    {/* <Navbar /> */}
-    <Box sx={{fontFamily : "monospace",fontSize : 48,fontWeight : "bold",display : "flex",justifyContent : "center",m: 3}}>Sign In</Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          alignContent : "center",
-        //   border : 4,
-          // height : "60%"
-        }}
+    <Box
+      sx={{
+        // height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        bgcolor: theme.palette.background.default,
+        p: 4,
+      }}
+    >
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        color={theme.palette.text.primary}
+        mb={4}
       >
-        <Form />
-      </Box>
+        Welcome to Truview
+      <Form />
+      </Typography>
     </Box>
   );
 };
 
-export default page;
+export default SignInPage;

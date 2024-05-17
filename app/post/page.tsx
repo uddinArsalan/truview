@@ -6,7 +6,7 @@ import Post from './Post';
 const page = () => {
   return (
     <div>
-        {/* <Navbar /> */}
+        
         <Post />
     </div>
   )

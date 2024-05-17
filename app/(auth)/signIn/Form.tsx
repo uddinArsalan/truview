@@ -1,46 +1,66 @@
 "use client";
-import React, { useState } from "react";
-import { Box, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import React, { useEffect } from "react";
+import { Box, Button, Typography, useMediaQuery, useTheme,IconButton ,Avatar} from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useUser } from "@auth0/nextjs-auth0/client";
 import axios from "axios";
+import { convertImgUrl } from "@/utils";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
 
 const Form = () => {
-  const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = React.useState<string | Blob>("");
+  const theme = useTheme();
   const { user } = useUser();
-  const handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
-    // Change ChangeEvent to FormEvent
+
+  useEffect(()=> {
+    console.log("Inside useEeffect")
+    async function updateUserData(){
+      if(user){
+        console.log("Make Rrequest")
+        try{
+          const res = await axios.post("http://localhost:3000/api/createUser");
+
+          console.log(res);
+        }catch(error){
+          console.log("Error creating user")
+        }
+
+      }
+    }
+    updateUserData()
+  },[user])
+
+  const handleImageChange = async (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) {
       const file = e.currentTarget.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        setSelectedImg(e.target?.result as string);
-      };
-
-      reader.readAsDataURL(file);
+      setSelectedFile(file);
     }
   };
-  // console.log(user?.sub);
+
+  const getProfileUrl = async () => {
+    const formData = new FormData();
+    formData.append("cover-image", selectedFile);
+    try {
+      const response = await fetch("http://localhost:3000/api/uploadImage/CoverImages", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json()
+      return data; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
   const updateProfilePic = async () => {
     const user_Id = user?.sub;
     try {
+      const ImageUrlObject = await getProfileUrl();
+      const imageUrl = ImageUrlObject.url;
+      console.log(imageUrl)
       const res = await axios.patch(
         "http://localhost:3000/api/profileUpdate",
-        { selectedImg, user_Id },
+        { imageUrl, user_Id },
         {
           headers: {
             "Content-Type": "application/json",
@@ -54,69 +74,81 @@ const Form = () => {
   };
   return (
     <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      bgcolor: 'background.paper',
+      p: 4,
+      gap: 4,
+    }}
+  >
+    <Typography variant="h5" component="h1" gutterBottom>
+      Update Profile Picture
+    </Typography>
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 4,
-        backgroundColor: "white",
-        borderRadius: 2,
-        // border: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 2,
+        bgcolor: 'background.default',
         p: 4,
+        borderRadius: 2,
+        boxShadow: 1,
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <div>
-          You can change your cover pic here,{" "}
-          <Box
-            sx={{
-              color: "blue",
-              textDecorationLine: "underline",
-              cursor: "pointer",
-              fontWeight : "light"
-            }}
-          >
-            select your profile pic
-          </Box>
-        </div>
-        <Box sx={{display : "flex",gap : 2}}>
-          <Button
-            component="label"
-            role={undefined}
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-          >
-            CHANGE PROFILE PIC
-            <VisuallyHiddenInput
-              type="file"
-              onChange={(e) => handleImageChange(e)}
-            />
-          </Button>
-          <Button variant="outlined" color="error" onClick={updateProfilePic}>
-            Upload
-          </Button>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          alignItems: "center",
-          justifyContent: "end",
-        }}
+      <Avatar
+        src={convertImgUrl(selectedFile as Blob)}
+        alt="Profile Picture"
+        sx={{ width: 80, height: 80 }}
+      />
+      <Typography variant="body1">
+        Select a new profile picture
+      </Typography>
+      <Button
+        component="label"
+        variant="outlined"
+        startIcon={<CloudUploadIcon />}
+        sx={{ borderRadius: 2 }}
       >
-        <a href="/api/auth/login">
-          <Button variant="contained" color="success" sx={{ w: "100%" }}>
-            LogIn
-          </Button>
-        </a>
-        <a href="/api/auth/logout">
-          <Button variant="outlined" color="error">
-            LogOut
-          </Button>
-        </a>
-      </Box>
+        Upload
+        <input
+          type="file"
+          style={{ display: 'none' }}
+          onChange={handleImageChange}
+        />
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={updateProfilePic}
+        sx={{ borderRadius: 2 }}
+      >
+        Save
+      </Button>
     </Box>
+    <Box sx={{ display: 'flex', gap: 2 }}>
+      <IconButton
+        component="a"
+        href="/api/auth/login"
+        sx={{ borderRadius: 2 }}
+      >
+        <Button variant="contained" color="success">
+          Login
+        </Button>
+      </IconButton>
+      <IconButton
+        component="a"
+        href="/api/auth/logout"
+        sx={{ borderRadius: 2 }}
+      >
+        <Button variant="outlined" color="error">
+          Logout
+        </Button>
+      </IconButton>
+    </Box>
+  </Box>
   );
 };
 

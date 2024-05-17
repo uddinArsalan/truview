@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model with auto-incrementing ID
+model User {
+  user_id    Int       @id @default(autoincrement())
+  email      String    @unique
+  username   String?
+  posts      Post[]
+  likes        Like[] 
+  comments     Comment[]    
+}
+
+// Post model with UUID
+model Post {
+  post_id      String         @id @default(uuid())
+  user         User           @relation(fields: [user_id], references: [user_id])
+  user_id      Int
+  description  String?
+  metadata ImageMetadata?
+  likes        Like[]
+  comments     Comment[]
+}
+
+// Image Metadata model with auto-incrementing ID
+model ImageMetadata {
+  image_id     Int            @id @default(autoincrement())
+  imageUrl     String  
+  post         Post         @relation(fields: [post_id], references: [post_id])
+  post_id      String   @unique
+  upload_date  DateTime
+}
+
+// Like model with UUID
+model Like {
+  like_id      String         @id @default(uuid())
+  user         User           @relation(fields: [user_id], references: [user_id])
+  user_id      Int
+  post         Post           @relation(fields: [post_id], references: [post_id])
+  post_id      String
+  like_date    DateTime
+}
+
+// Comment model with UUID
+model Comment {
+  comment_id    String       @id @default(uuid())
+  user          User         @relation(fields: [user_id], references: [user_id])
+  user_id       Int
+  post          Post         @relation(fields: [post_id], references: [post_id])
+  post_id       String
+  comment_text  String
+  comment_date  DateTime
+}

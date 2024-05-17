@@ -1,149 +1,155 @@
 "use client";
-import * as React from "react";
-import { IconButton } from "@mui/material";
-import Grid from "@mui/material/Grid";
-// import FormLabel from "@mui/material/FormLabel";
-// import FormControl from "@mui/material/FormControl";
-// import FormControlLabel from "@mui/material/FormControlLabel";
-// import RadioGroup from "@mui/material/RadioGroup";
-// import Radio from "@mui/material/Radio";
-// import { Avatar } from "@mui/material";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { AccountCircle } from "@mui/icons-material";
-import LikeButton from "./LikeButton";
-// import ImageComponent from "./ImageComponent";
+import React, { useState } from 'react';
+import { Grid, Paper, Box, Typography, Avatar, IconButton, Badge, useMediaQuery, useTheme } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import ShareIcon from '@mui/icons-material/Share';
+import Image from 'next/image';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import WavingHandIcon from '@mui/icons-material/WavingHand';
 
-import Image from "next/image";
-import Paper from "@mui/material/Paper";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Box } from "@mui/material";
-// import HighlightedCode from 'docs/src/modules/components/HighlightedCode';
+interface PostProps {
+  value: number;
+  index: number;
+  user: any;
+}
 
-export default function Feed() {
-  const { user, error, isLoading } = useUser();
-  const [spacing, setSpacing] = React.useState(2);
+const Post = ({ value, index, user }: PostProps) => {
+  const [spacing, setSpacing] = useState(2);
+  const email = user?.email as string;
+  console.log(email);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSpacing(Number((event.target as HTMLInputElement).value));
   };
 
-  const jsx = `
-<Grid container spacing={${spacing}}>
-`;
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = React.useState(0);
+  const [comments, setComments] = React.useState(0);
+  const [shares, setShares] = React.useState(0);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikes(liked ? likes - 1 : likes + 1);
+  };
+
+  const handleComment = () => {
+    setComments(comments + 1);
+  };
+
+  const handleShare = () => {
+    setShares(shares + 1);
+  };
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <>
-      <Box
+    <Grid item xs={12} sm={6} md={4} mb={4} >
+      <Paper elevation={3} sx={{ borderRadius: 2 }}>
+        <Image
+          src={`https://source.unsplash.com/1600x900/?movies&n=${index}`}
+          alt="Post"
+          style={{ width: '100%', backgroundSize: 'cover' }}
+          width={isSmallScreen ? 300 : 400}
+          height={isSmallScreen ? 200 : 300}
+        />
+        <Box p={2}>
+          <Typography variant="body1" noWrap>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus voluptate cumque laboriosam
+            fugit iste qui necessitatibus natus vero facere, saepe temporibus nemo.
+          </Typography>
+          <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center">
+              <IconButton onClick={handleLike} size="small" sx={{ mr: 1 }}>
+                {liked ? (
+                  <FavoriteIcon color="error" />
+                ) : (
+                  <FavoriteBorderIcon color="action" />
+                )}
+              </IconButton>
+              <Typography variant="body2" color="text.secondary">
+                {likes}
+              </Typography>
+              <IconButton onClick={handleComment} size="small" sx={{ ml: 2, mr: 1 }}>
+                <Badge badgeContent={comments} color="primary">
+                  <ChatBubbleOutlineIcon />
+                </Badge>
+              </IconButton>
+              <IconButton onClick={handleShare} size="small">
+                <Badge badgeContent={shares} color="primary">
+                  <ShareIcon />
+                </Badge>
+              </IconButton>
+            </Box>
+            <Avatar src={`https://source.unsplash.com/200x200/?person&n=${value}`} />
+          </Box>
+        </Box>
+      </Paper>
+    </Grid>
+  );
+};
+
+const WelcomeMessage = () => {
+  const theme = useTheme();
+  const {user} = useUser();
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      mb={4}
+    >
+      <Typography
+        variant="h4"
+        fontWeight="bold"
         sx={{
-          fontWeight: "bold",
-          fontSize: 32,
-          display: "flex",
-          justifyContent: "center",
-          p: 4,
-          w: "100%",
-          wordWrap: "break-word",
+          color: theme.palette.primary.main,
+          display: 'flex',
+          alignItems: 'center',
+          mb: 1,
         }}
       >
-        WELCOME {user?.name?.toUpperCase()}
-      </Box>
-      <Grid sx={{ flexGrow: 1 }} container spacing={2}>
-        <Grid item xs={12}>
-          <Grid container justifyContent="center" spacing={spacing}>
-            {[16, 27, 32, 45, 7, 9, 237, 58].map((value, index) => (
-              <Grid key={value} item>
-                <Paper
-                  sx={{
-                    height: 300,
-                    width: 300,
-                    display: "flex",
-                    flexDirection: "column",
-                    backgroundColor: (theme) =>
-                      theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-                  }}
-                >
-                  <Image
-                    src={`https://source.unsplash.com/1000x1200/?movies&n=${index}`}
-                    width={300}
-                    height={200}
-                    style={{ objectFit: "cover" }}
-                    className="rounded-md"
-                    alt="Hero Image"
-                  />
-                  <Box
-                    sx={{
-                      p: 2,
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                    }}
-                  >
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Provident repellendus voluptate cumque laboriosam fugit iste
-                    qui necessitatibus natus vero facere, saepe temporibus nemo.
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      p: 1,
-                      pb: 0,
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        p: 2,
-                        gap: 3,
-                      }}
-                    >
-                      <LikeButton value={value}/>
-                      <ChatBubbleOutlineIcon
-                        sx={{ cursor: "pointer", "&:hover": { color: "blue" } }}
-                      />
-                    </Box>
-                    <AccountCircle sx={{ ml: 2 }} />
-                    {/* <Avatar
-                      alt="Remy Sharp"
-                      src={`/static/images/avatar/${index}.jpg`}
-                    /> */}
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-        {/* <Grid item xs={12}>
-        <Paper sx={{ p: 2 }}>
-          <Grid container>
-            <Grid item>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">spacing</FormLabel>
-                <RadioGroup
-                  name="spacing"
-                  aria-label="spacing"
-                  value={spacing.toString()}
-                  onChange={handleChange}
-                  row
-                >
-                  {[0, 0.5, 1, 2, 3, 4, 8, 12].map((value) => (
-                    <FormControlLabel
-                      key={value}
-                      value={value.toString()}
-                      control={<Radio />}
-                      label={value.toString()}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </Paper>
-        <HighlightedCode code={jsx} language="jsx" />
-      </Grid> */}
-      </Grid>
-    </>
+        <WavingHandIcon fontSize="inherit" sx={{ mr: 1 }} />
+        Welcome{' '}
+        {user
+          ? user.nickname
+            ? `${user.nickname.split(' ')[0]}!`
+            : 'User!'
+          : 'User!'
+        }
+      </Typography>
+      <Typography
+        variant="body1"
+        color="text.secondary"
+        textAlign="center"
+        sx={{ maxWidth: 400 }}
+      >
+        Share your amazing moments with the world and connect with friends.
+      </Typography>
+    </Box>
   );
-}
+};
+
+const SocialMediaFeed = () => {
+  const { user, error, isLoading } = useUser();
+  const postValues = [16, 27, 32, 45, 7, 9, 237, 58];
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  return (
+    <Box py={6} px={isSmallScreen ? 2 : 6}  sx={{backgroundColor: theme.palette.background.default}}>
+      <WelcomeMessage />
+      <Grid container spacing={4} justifyContent="center">
+        {postValues.map((value, index) => (
+          <Post key={index} value={value} index={index} user={user} />
+        ))}
+      </Grid>
+    </Box>
+  );
+};
+
+export default SocialMediaFeed;
