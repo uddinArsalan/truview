@@ -1,13 +1,12 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { getSession } from "@auth0/nextjs-auth0";
-import { NextRequest,NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
-export async function GET(res : NextResponse){
+export async function GET(){
     const data = await getSession();
     const user = data?.user;
     const email = user?.email;
-    // console.log(data);
     const user_id = user?.sid;
     try{
         const users = await prisma.user.findUnique({
