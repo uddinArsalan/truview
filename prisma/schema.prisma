@@ -15,6 +15,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 model User {
@@ -58,5 +59,4 @@ model Comment {
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
   createdAt DateTime @default(now())
-  // updatedAt DateTime @updatedAt
 }
