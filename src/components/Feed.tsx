@@ -20,6 +20,7 @@ import { useInfiniteQuery,InfiniteData, QueryKey, } from "@tanstack/react-query"
 import { getPosts } from "../lib/client_data/getPosts";
 import { GetPostResult } from "@/src/types/definition";
 import { POSTS_PER_PAGE } from "../constants";
+import FeedSkeleton from "./FeedSkeleton";
 
 const FeedPost = ({ post }: { post: GetPostResult }) => {
   const { _count, author, content, imageUrl } = post;
@@ -42,69 +43,62 @@ const FeedPost = ({ post }: { post: GetPostResult }) => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="p-0">
-        <Image
-          src={imageUrl}
-          width={400}
-          height={400}
-          alt={`post-${author.username}`}
-          className="w-full h-48 object-cover rounded-t-lg"
-        />
-      </CardHeader>
-      <CardContent className="p-4">
-        <p className="text-sm text-gray-600 line-clamp-3">
-          {content ||
-            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
-          repellendus voluptate cumque laboriosam fugit iste qui necessitatibus
-          natus vero facere, saepe temporibus nemo.`}
-        </p>
-      </CardContent>
-      <CardFooter className="flex justify-between items-center p-4">
-        <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLike}
-            className="p-0"
-          >
-            <Heart
-              className={`h-5 w-5 ${
-                liked ? "fill-red-500 text-red-500" : "text-gray-500"
-              }`}
-            />
-            <span className="ml-1 text-xs">{_count.likes}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleComment}
-            className="p-0"
-          >
-            <MessageCircle className="h-5 w-5 text-gray-500" />
-            <Badge variant="secondary" className="ml-1">
-              {_count.comments}
-            </Badge>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleShare}
-            className="p-0"
-          >
-            <Share2 className="h-5 w-5 text-gray-500" />
-            <Badge variant="secondary" className="ml-1">
-              {shares}
-            </Badge>
-          </Button>
-        </div>
+    <Card className="w-full max-w-2xl mx-auto hover:shadow-lg transition-shadow duration-200">
+      <CardHeader className="p-4 flex flex-row items-center space-x-4">
         <Avatar>
           <AvatarImage
             src={`https://i.pravatar.cc/150?u=${author.username}`}
             alt={author.username || "User"}
           />
-          <AvatarFallback>{author.username || "U"}</AvatarFallback>
+          <AvatarFallback>{author.username?.[0] || "U"}</AvatarFallback>
         </Avatar>
+        <div>
+          <h3 className="font-semibold">{author.username}</h3>
+          <p className="text-sm text-gray-500">Just now</p>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <Image
+          src={imageUrl}
+          width={800}
+          height={600}
+          alt={`post-${author.username}`}
+          className="w-full aspect-video object-cover"
+        />
+        <div className="p-4">
+          <p className="text-sm text-gray-600">
+            {content ||
+              `Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
+            repellendus voluptate cumque laboriosam fugit iste qui necessitatibus
+            natus vero facere, saepe temporibus nemo.`}
+          </p>
+        </div>
+      </CardContent>
+      <CardFooter className="p-4 border-t">
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLike}
+            // className="hover:bg-red-50"
+          >
+            <Heart
+              className={`h-5 w-5 mr-1 ${
+                liked ? "fill-red-500 text-red-500" : "text-gray-500"
+              }`}
+            />
+            <span className="text-sm">{likes}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleComment}
+            // className="hover:bg-blue-50"
+          >
+            <MessageCircle className="h-5 w-5 mr-1 text-gray-500" />
+            <Badge variant="secondary">{comments}</Badge>
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
@@ -115,14 +109,16 @@ const WelcomeMessage = () => {
   const userName = user?.nickname?.split(" ")[0] || "User";
 
   return (
-    <div className="flex flex-col items-center justify-center mb-8">
-      <h1 className="text-3xl font-bold text-primary flex items-center mb-2">
-        <WavesIcon className="mr-2" />
-        Welcome, {userName}!
-      </h1>
-      <p className="text-gray-600 text-center max-w-md">
-        Share your amazing moments with the world and connect with friends.
-      </p>
+    <div className="w-full max-w-2xl mx-auto p-6 mb-8">
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold text-primary flex items-center mb-3">
+          <Heart className="mr-2 h-8 w-8 text-red-600" />
+          Welcome, {userName}!
+        </h1>
+        <p className="text-gray-600 text-center">
+          Share your amazing moments with the world and connect with friends.
+        </p>
+      </div>
     </div>
   );
 };
@@ -171,22 +167,40 @@ const SocialMediaFeed = () => {
     };
   }, [hasNextPage, isFetching,fetchNextPage]);
 
-  if (error) return <div>Error loading posts</div>;
+  if (error) {
+    return (
+      <div className="flex justify-center p-8">
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+          Error loading posts. Please try again later.
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="py-6 px-4 sm:px-6 lg:px-8 bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
+    <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <WelcomeMessage />
-      {isLoading && <Loader />}
-      {data?.pages.map((page, index) => (
-        <React.Fragment key={index}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {page &&
-              page.map((post, index) => <FeedPost key={post.id} post={post} />)}
-          </div>
-        </React.Fragment>
-      ))}
-      <div ref={lastElementDiv}>{isFetchingNextPage && "Loading"}</div>
+      <div className="space-y-6">
+        {isLoading ? (
+          <FeedSkeleton />
+        ) : (
+          data?.pages.map((page, index) => (
+            <React.Fragment key={index}>
+              {page?.map((post) => (
+                <FeedPost key={post.id} post={post} />
+              ))}
+            </React.Fragment>
+          ))
+        )}
+      </div>
+      <div ref={lastElementDiv} className="py-4 flex justify-center">
+        {isFetchingNextPage && (
+          <div className="text-gray-500">Loading more posts...</div>
+        )}
+      </div>
     </div>
+  </div>
   );
 };
 
