@@ -5,6 +5,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const cursor = searchParams.get("cursor") || "";
   const limit = parseInt(searchParams.get("limit") || "6", 10);
+  console.log(limit,cursor)
   try {
     const allPosts = await prisma.post.findMany({
       select: {

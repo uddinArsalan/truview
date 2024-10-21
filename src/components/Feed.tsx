@@ -16,7 +16,7 @@ import {
   AvatarImage,
 } from "@/src/components/ui/avatar";
 import { Badge } from "@/src/components/ui/badge";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery,InfiniteData, QueryKey, } from "@tanstack/react-query";
 import { getPosts } from "../lib/client_data/getPosts";
 import { GetPostResult } from "@/src/types/definition";
 import { POSTS_PER_PAGE } from "../constants";
@@ -139,22 +139,14 @@ const SocialMediaFeed = () => {
     status,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["posts"],
-    initialPageParam: undefined,
+    queryKey: ['posts'] as const,
     queryFn: getPosts,
-    getNextPageParam: (lastPage, pages) => {
-      // If the `pages` `length` is 0, that means there is not a single post to load
-      if (pages?.length == 0) return undefined;
-
-      // If the last page doesn't have posts, that means the end is reached
-      // If we got fewer posts than the limit, we've reached the end
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage, allPages) => {
       if (!lastPage || lastPage.length < POSTS_PER_PAGE) {
-        return undefined;
+        return null;
       }
-
-      // Return the id of the last post, this will serve as the cursor
-      // that will be passed to `getPosts` as `pageParam` property
-      return lastPage[lastPage.length - 1]?.id as string;
+      return lastPage[lastPage.length - 1]?.id ?? null;
     },
   });
 
@@ -165,7 +157,7 @@ const SocialMediaFeed = () => {
           fetchNextPage({ cancelRefetch: false });
         }
       },
-      { threshold: 0.5 }
+      { threshold: 1 }
     );
 
     if (lastElementDiv.current) {
@@ -177,10 +169,9 @@ const SocialMediaFeed = () => {
         observer.unobserve(lastElementDiv.current);
       }
     };
-  }, [hasNextPage, isFetching]);
-  console.log("Has NextPage", hasNextPage);
-  console.log("isFetching", isFetching);
-  console.log("isFetchingNextPage", isFetchingNextPage);
+  }, [hasNextPage, isFetching,fetchNextPage]);
+
+  if (error) return <div>Error loading posts</div>;
 
   return (
     <div className="py-6 px-4 sm:px-6 lg:px-8 bg-gray-100">

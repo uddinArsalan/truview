@@ -20,16 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+    <body className={inter.className}>
       <UserProvider>
         <ReactQueryProvider>
           <AppProvider>
-            <body className={inter.className}>
-              <Navbar />
-              {children}
-            </body>
+            <Navbar />
+            {children}
           </AppProvider>
         </ReactQueryProvider>
       </UserProvider>
-    </html>
+    </body>
+  </html>
   );
 }
