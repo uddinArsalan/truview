@@ -6,7 +6,11 @@ import axios from "axios";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
 import { Upload, LogIn, LogOut } from "lucide-react";
 
 const ProfileUpdateForm = () => {
@@ -38,34 +42,33 @@ const ProfileUpdateForm = () => {
     }
   };
 
-  const getProfileUrl = async () => {
-    const formData = new FormData();
-    if (!selectedFile) return;
-    formData.append("cover-image", selectedFile);
-    try {
-      const response = await axios.post(`/api/upload-image/cover`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.data;
-      return data;
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
+  // const getProfileUrl = async () => {
+  //   const formData = new FormData();
+  //   if (!selectedFile) return;
+  //   formData.append("cover-image", selectedFile);
+  //   try {
+  //     const response = await axios.post(`/api/upload-image/cover`, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+  //     const data = await response.data;
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Error uploading image:", error);
+  //   }
+  // };
 
   const updateProfilePic = async () => {
     const user_Id = user?.sub;
+    const formData = new FormData();
+    if (!selectedFile) return;
+    formData.append("profile-image", selectedFile);
     try {
-      const ImageUrlObject = await getProfileUrl();
-      const imageUrl = ImageUrlObject.url;
       const res = await axios.patch(
         `/api/users/${user_Id}/profile/`,
-        { imageUrl },
+        formData,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       console.log("Profile pic updated", res.data);

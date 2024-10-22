@@ -18,6 +18,10 @@ const nextConfig = {
                 protocol : "https",
                 hostname : "picsum.photos"
             },
+            {
+                protocol : "https",
+                hostname : "truview-backblaze-proxy.uddinarsalan91.workers.dev"
+            },
         ]
     }
 };

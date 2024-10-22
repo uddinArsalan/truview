@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { storeFileB2 } from "@/src/lib/backblaze-b2/storeFileB2";
 const CLIENT_ID = process.env.AUTH0_MANAGEMENT_CLIENT_ID;
 const CLIENT_SECRET = process.env.AUTH0_MANAGEMENT_CLIENT_SECRET;
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { userId: string } }
+) {
   try {
-    const { imageUrl, user_Id } = await req.json();
+    const formData = await req.formData();
+    const { userId } = params;
+    const file: File | null = formData.get("profile-image") as File;
+    const { imageUrl } = await storeFileB2(file, "profile_images");
 
     const data = {
       client_id: CLIENT_ID,
@@ -28,7 +35,7 @@ export async function PATCH(req: NextRequest) {
 
     const options = {
       method: "PATCH",
-      url: `https://dev-ic3y40p3ppmkci4u.us.auth0.com/api/v2/users/${user_Id}`,
+      url: `https://dev-ic3y40p3ppmkci4u.us.auth0.com/api/v2/users/${userId}`,
       headers: {
         authorization: `Bearer ${BEARER_TOKENS}`,
         "Content-type": "application/json",

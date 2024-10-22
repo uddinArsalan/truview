@@ -74,7 +74,7 @@ const Navbar = () => {
                       src={user?.picture || "https://github.com/shadcn.png"}
                       alt={user?.name || "User"}
                     />
-                    <AvatarFallback>{user?.name?.[0] || "U"}</AvatarFallback>
+                    <AvatarFallback className="text-black">{user?.name?.[0] || "U"}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>

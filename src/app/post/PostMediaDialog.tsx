@@ -14,15 +14,8 @@ import {
   DialogFooter,
 } from "@/src/components/ui/dialog";
 
-// import { convertImgUrl } from "@/utils";
-
-interface propsTypes {
-  description: string;
-}
-
-export default function PostMediaDialog({ description }: propsTypes) {
+export default function PostMediaDialog({ formData }: {formData : FormData}) {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleImageUpload = async () => {
@@ -31,44 +24,40 @@ export default function PostMediaDialog({ description }: propsTypes) {
       return;
     }
 
-    setIsLoading(true);
-    const formData = new FormData();
-    formData.append("image", selectedFile);
+    formData.append("post-image", selectedFile);
 
-    try {
-      const imageResponse = await axios.post(
-        "/api/uploadImage/uploads",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+    // try {
+      // const imageResponse = await axios.post(
+      //   "/api/upload-image/uploads",
+      //   formData,
+      //   {
+      //     headers: { "Content-Type": "multipart/form-data" },
+      //   }
+      // );
 
-      const imageUrl = imageResponse.data.url;
-      console.log("Image uploaded successfully:", imageUrl);
-
-      await postToDatabaseAndShowIt(imageUrl);
+      // const imageUrl = imageResponse.data.url;
+      // console.log("Image uploaded successfully:", imageUrl);
 
       setOpen(false);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    // } catch (error) {
+    //   console.error("Error uploading image:", error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
-  const postToDatabaseAndShowIt = async (imageUrl: string) => {
-    try {
-      const response = await axios.post("/api/createPost", {
-        imageUrl,
-        descriptionOfImage: description,
-      });
+  // const postToDatabaseAndShowIt = async (imageUrl: string) => {
+  //   try {
+  //     const response = await axios.post("/api/createPost", {
+  //       imageUrl,
+  //       descriptionOfImage: description,
+  //     });
 
-      console.log("Successfully posted data to database:", response.data);
-    } catch (error) {
-      console.error("Error posting to database:", error);
-    }
-  };
+  //     console.log("Successfully posted data to database:", response.data);
+  //   } catch (error) {
+  //     console.error("Error posting to database:", error);
+  //   }
+  // };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -87,7 +76,7 @@ export default function PostMediaDialog({ description }: propsTypes) {
         <DialogHeader>
           <DialogTitle>Choose your photo or video</DialogTitle>
           <DialogDescription>
-            Upload a photo or video to share with your post.
+            Add a photo or video to share with your post.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center gap-4 p-4 border-2 border-primary rounded-md">
@@ -126,9 +115,9 @@ export default function PostMediaDialog({ description }: propsTypes) {
           </Button>
           <Button
             onClick={handleImageUpload}
-            disabled={isLoading || !selectedFile}
+            disabled={!selectedFile}
           >
-            {isLoading ? "Uploading..." : "Upload"}
+            Add Media
           </Button>
         </DialogFooter>
       </DialogContent>

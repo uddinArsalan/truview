@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@auth0/nextjs-auth0";
 import prisma from "@/src/lib/prisma/prisma";
+import { storeFileB2 } from "@/src/lib/backblaze-b2/storeFileB2";
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getSession();
+    const formData = await req.formData();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-
-    const { imageUrl, descriptionOfImage } = await req.json();
-    if (!imageUrl || !descriptionOfImage) {
+    const file: File | null = formData.get("post-image") as unknown as File;
+    const content = formData.get("content") as string;
+    console.log(file,content)
+    if (!file || !content) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Both 'content' and 'post-image' are required." },
         { status: 400 }
       );
     }
 
-    // TODO: Add validation for imageUrl (e.g., check if it's a valid URL, from an allowed domain, etc.)
+    const { imageUrl } = await storeFileB2(file, "posts");
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
@@ -31,11 +34,20 @@ export async function POST(req: NextRequest) {
 
     const post = await prisma.post.create({
       data: {
-        content: descriptionOfImage,
+        content,
         imageUrl: imageUrl,
         author: { connect: { id: userId } },
       },
-      include: { author: true },
+      select: {
+        id: true,
+        content: true,
+        imageUrl: true,
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json({ post });

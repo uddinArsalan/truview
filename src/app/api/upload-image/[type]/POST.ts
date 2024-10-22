@@ -19,7 +19,7 @@ export async function POST(
   try {
     const directory = params.type;
     const formData = await req.formData();
-    const formKey = directory == "cover" ? "cover-image" : "image";
+    const formKey = directory == "profile-images" ? "profile-image" : "post-image";
     const file: File | null = formData.get(formKey) as unknown as File;
     sanitize(file.name);
 
