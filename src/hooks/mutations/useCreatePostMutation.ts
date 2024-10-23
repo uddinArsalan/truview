@@ -4,28 +4,19 @@ import {
   useMutation,
   InfiniteData,
 } from "@tanstack/react-query";
-// import { getSession } from "@auth0/nextjs-auth0";
 import { chunk } from "lodash";
 import { POSTS_PER_PAGE } from "@/src/constants";
 import axios from "axios";
-export function useCreatePostMutation({
-  formData,
-}: {
-  formData: FormData;
-}) {
+export function useCreatePostMutation({ formData }: { formData: FormData }) {
   const qc = useQueryClient();
   // const session = await getSession();
   const queryKey = ["posts"];
   const createPostMutation = useMutation({
     mutationFn: async () => {
       try {
-        const response = await axios.post(
-          "/api/posts",
-            formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        const response = await axios.post("/api/posts", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         if (!(response.statusText === "OK"))
           throw new Error(response.statusText);
         console.log("Successfully posted data to database:", response.data);
@@ -44,6 +35,8 @@ export function useCreatePostMutation({
 
           const newPost = {
             ...createdPost,
+            likes: undefined,
+            isUserLiked: false,
             _count: {
               likes: 0,
               comments: 0,

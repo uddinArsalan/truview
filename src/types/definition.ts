@@ -6,10 +6,12 @@ export interface CreatedPost {
 }
 
 export interface GetPostResult extends CreatedPost {
+  isUserLiked: boolean;
+  likes: undefined;
   _count: {
     likes: number;
     comments: number;
   };
 }
 
-export type Directory =  'profile_images' | 'posts'
+export type Directory = "profile_images" | "posts";

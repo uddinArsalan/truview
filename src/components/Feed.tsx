@@ -21,26 +21,22 @@ import { getPosts } from "../lib/client_data/getPosts";
 import { GetPostResult } from "@/src/types/definition";
 import { POSTS_PER_PAGE } from "../constants";
 import FeedSkeleton from "./FeedSkeleton";
+import { usePostLikesMutations } from "../hooks/mutations/usePostLikesMutations";
 
 const FeedPost = ({ post }: { post: GetPostResult }) => {
-  const { _count, author, content, imageUrl } = post;
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(0);
+  const {likeMutation} = usePostLikesMutations({postId : post.id})
+  const { _count, author, content, imageUrl,isUserLiked } = post;
   const [comments, setComments] = useState(0);
   const [shares, setShares] = useState(0);
 
   const handleLike = () => {
-    setLiked(!liked);
-    setLikes(liked ? likes - 1 : likes + 1);
+    likeMutation.mutate()
   };
 
   const handleComment = () => {
     setComments(comments + 1);
   };
 
-  const handleShare = () => {
-    setShares(shares + 1);
-  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto hover:shadow-lg transition-shadow duration-200">
@@ -84,10 +80,10 @@ const FeedPost = ({ post }: { post: GetPostResult }) => {
           >
             <Heart
               className={`h-5 w-5 mr-1 ${
-                liked ? "fill-red-500 text-red-500" : "text-gray-500"
+                isUserLiked ? "fill-red-500 text-red-500" : "text-gray-500"
               }`}
             />
-            <span className="text-sm">{likes}</span>
+            <span className="text-sm">{_count.likes}</span>
           </Button>
           <Button
             variant="ghost"
@@ -144,6 +140,7 @@ const SocialMediaFeed = () => {
       }
       return lastPage[lastPage.length - 1]?.id ?? null;
     },
+    staleTime: 5000 * 60,
   });
 
   useEffect(() => {
