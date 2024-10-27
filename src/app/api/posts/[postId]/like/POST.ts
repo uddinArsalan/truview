@@ -4,7 +4,7 @@ import prisma from "@/src/lib/prisma/prisma";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
     const session = await getSession();
@@ -12,14 +12,14 @@ export async function POST(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const { postId } = params;
+    const { postId } = await params;
     const userId = session.user.sub;
 
     const isLiked = await prisma.like.count({
-      where : {
-        user : {auth0Id : userId},
-        postId
-      }
+      where: {
+        user: { auth0Id: userId },
+        postId,
+      },
     });
 
     if (isLiked) {
@@ -34,7 +34,7 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({ });
+    return NextResponse.json({});
   } catch (error) {
     console.error("Error creating like:", error);
     return NextResponse.json({ error: "Error creating like" }, { status: 500 });

@@ -4,7 +4,7 @@ import prisma from "@/src/lib/prisma/prisma";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
     const session = await getSession();
@@ -12,7 +12,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const { postId } = params;
+    const { postId } = await params;
     const userId = session.user.sub;
 
     const post = await prisma.like.deleteMany({

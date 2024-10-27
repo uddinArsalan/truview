@@ -21,7 +21,7 @@ const WelcomeMessage = () => {
         <div className="flex-1">
           <h1 className="text-lg font-medium">Welcome back, {userName}</h1>
           <p className="text-sm text-muted-foreground">
-            What's on your mind today?
+            What&apos; on your mind today?
           </p>
         </div>
       </div>

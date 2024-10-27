@@ -8,11 +8,11 @@ const CLIENT_SECRET = process.env.AUTH0_MANAGEMENT_CLIENT_SECRET;
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     const formData = await req.formData();
-    const { userId } = params;
+    const { userId } = await params;
     const session = await getSession();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthenticated" }, { status: 404 });

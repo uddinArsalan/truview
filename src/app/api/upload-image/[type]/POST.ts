@@ -13,13 +13,13 @@ const b2 = new B2({
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { type: string } }
+  { params }: { params: Promise<{ type: string }> }
 ) {
-  // console.log(BACKBLAZE_APP_KEY, BACKBLAZE_BUCKET_ID, BACKBLAZE_KEY_ID);
   try {
-    const directory = params.type;
+    const directory = (await params).type;
     const formData = await req.formData();
-    const formKey = directory == "profile-images" ? "profile-image" : "post-image";
+    const formKey =
+      directory == "profile-images" ? "profile-image" : "post-image";
     const file: File | null = formData.get(formKey) as unknown as File;
     sanitize(file.name);
 

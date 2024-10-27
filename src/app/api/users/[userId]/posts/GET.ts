@@ -5,9 +5,9 @@ import { UserProfileDetails } from "@/src/types/definition";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
-  const { userId } = params;
+  const { userId } = await params;
   const session = await getSession();
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -52,7 +52,7 @@ export async function GET(
         },
       },
     });
-    const userProfileDetails : Partial<UserProfileDetails>= {
+    const userProfileDetails: Partial<UserProfileDetails> = {
       ...userAllPosts,
       noOfPosts: userAllPosts?._count.posts,
       _count: undefined,

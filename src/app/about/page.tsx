@@ -80,13 +80,13 @@ const AboutUs = () => {
                   pretense.
                 </p>
                 <p>
-                  We've built a community-focused platform that prioritizes
+                  We&apos;ve built a community-focused platform that prioritizes
                   genuine connections and real moments over carefully curated
                   perfection. Every feature we develop is designed to enhance
                   the way you capture and share your stories.
                 </p>
                 <p>
-                  Looking ahead, we're committed to evolving with our users'
+                  Looking ahead, we&apos;re committed to evolving with our users&apos;
                   needs while maintaining our core values of authenticity,
                   security, and community.
                 </p>

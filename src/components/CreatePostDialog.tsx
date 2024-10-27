@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Textarea } from "@/src/components/ui/textarea";
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog";
-import { Image, X } from "lucide-react";
+import { Image as ImageIcon, X } from "lucide-react";
 import { useCreatePostMutation } from "@/src/hooks/mutations/useCreatePostMutation";
 
 const CreatePostDialog = () => {
@@ -104,7 +105,7 @@ const CreatePostDialog = () => {
             <div className="relative">
               {selectedFile?.type.startsWith("image/") ? (
                 <div className="relative w-full h-48">
-                  <img
+                  <Image
                     src={previewURL}
                     alt="Preview"
                     className="w-full h-full object-cover rounded-lg"
@@ -138,7 +139,7 @@ const CreatePostDialog = () => {
                 asChild
               >
                 <label className="cursor-pointer">
-                  <Image className="w-5 h-5" />
+                  <ImageIcon className="w-5 h-5" />
                   <input
                     type="file"
                     className="hidden"

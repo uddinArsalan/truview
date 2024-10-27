@@ -4,7 +4,7 @@ import prisma from "@/src/lib/prisma/prisma";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
     const session = await getSession();
@@ -12,8 +12,8 @@ export async function POST(
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const { content }: { postId: string; content: string } = await req.json();
-    const { postId } = params;
+    const { content }: { content: string } = await req.json();
+    const { postId } = await params;
     const userId = session.user.sub;
 
     const post = await prisma.comment.create({
