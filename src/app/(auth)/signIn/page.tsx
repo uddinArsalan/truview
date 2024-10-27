@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/ca
 
 const SignInPage = () => {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-blue-500 to-purple-600 p-4">
+    <div className="min-h-screen flex flex-col justify-center items-center p-4">
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="text-3xl font-bold text-center text-gray-800">Welcome to Truview</CardTitle>

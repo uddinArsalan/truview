@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getSession, Claims } from "@auth0/nextjs-auth0";
 import prisma from "@/src/lib/prisma/prisma";
 
 export async function POST(req: NextRequest) {
@@ -19,8 +19,9 @@ export async function POST(req: NextRequest) {
       const newUser = await prisma.user.create({
         data: {
           auth0Id: user.sub,
-          email: session.user.email,
-          username: session.user.nickname,
+          email: user.email,
+          username: user.nickname,
+          profile_picture: user.picture,
         },
       });
       return NextResponse.json({ user: newUser }, { status: 200 });

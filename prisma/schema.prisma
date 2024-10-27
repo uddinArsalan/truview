@@ -23,6 +23,8 @@ model User {
   auth0Id   String   @unique 
   username  String   @unique
   email     String   @unique
+  profile_picture String?
+  bio String?
   posts     Post[]
   likes     Like[]
   comments  Comment[]

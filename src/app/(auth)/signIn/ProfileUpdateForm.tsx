@@ -17,47 +17,12 @@ const ProfileUpdateForm = () => {
   const [selectedFile, setSelectedFile] = useState<Blob>();
   const { user } = useUser();
 
-  // useEffect(()=> {
-  //   console.log("Inside useEeffect")
-  //   async function updateUserData(){
-  //     if(user){
-  //       console.log("Make Rrequest")
-  //       try{
-  //         const res = await axios.post("http://localhost:3000/api/createUser");
-
-  //         console.log(res);
-  //       }catch(error){
-  //         console.log("Error creating user")
-  //       }
-
-  //     }
-  //   }
-  //   updateUserData()
-  // },[user])
-
   const handleImageChange = async (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget && e.currentTarget.files && e.currentTarget.files[0]) {
       const file = e.currentTarget.files[0];
       setSelectedFile(file);
     }
   };
-
-  // const getProfileUrl = async () => {
-  //   const formData = new FormData();
-  //   if (!selectedFile) return;
-  //   formData.append("cover-image", selectedFile);
-  //   try {
-  //     const response = await axios.post(`/api/upload-image/cover`, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-  //     const data = await response.data;
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error uploading image:", error);
-  //   }
-  // };
-
   const updateProfilePic = async () => {
     const user_Id = user?.sub;
     const formData = new FormData();

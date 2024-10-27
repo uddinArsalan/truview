@@ -6,23 +6,27 @@ import {
 } from "@tanstack/react-query";
 import { chunk } from "lodash";
 import { POSTS_PER_PAGE } from "@/src/constants";
+import toast from "react-hot-toast";
 import axios from "axios";
-export function useCreatePostMutation({ formData }: { formData: FormData }) {
+
+export function useCreatePostMutation({ formData,closeModal }: { formData: FormData,closeModal : () => void }) {
   const qc = useQueryClient();
-  // const session = await getSession();
   const queryKey = ["posts"];
   const createPostMutation = useMutation({
     mutationFn: async () => {
       try {
-        const response = await axios.post("/api/posts", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const response = await toast.promise(
+          axios.post("/api/posts", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          }),
+          { loading: "creating post...", success: "", error: "" }
+        );
         if (!(response.statusText === "OK"))
           throw new Error(response.statusText);
-        console.log("Successfully posted data to database:", response.data);
+        // console.log("Successfully posted data to database:", response.data);
         return response.data.post as CreatedPost;
       } catch (error) {
-        console.error("Error posting to database:", error);
+        console.error("Error posting", error);
         throw error;
       }
     },
@@ -56,9 +60,12 @@ export function useCreatePostMutation({ formData }: { formData: FormData }) {
           };
         }
       );
+      closeModal()
     },
     onError: (error) => {
       console.log(error);
+      toast.error('Error creating post')
+      closeModal()
     },
   });
 

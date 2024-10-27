@@ -1,9 +1,9 @@
-import SocialMediaFeed from "../components/Feed";
+import HomeFeed from "../components/HomeFeed";
 
 export default function Home() {
   return (
     <main>
-      <SocialMediaFeed />
+      <HomeFeed />
     </main>
   );
 }

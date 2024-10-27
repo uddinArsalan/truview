@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
         id: true,
         content: true,
         imageUrl: true,
-        author: { select: { username: true } },
+        author: { select: { username: true,profile_picture : true } },
         _count: {
           select: {
             likes: true,

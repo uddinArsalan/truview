@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const post = await prisma.post.create({
       data: {
         content,
-        imageUrl: imageUrl,
+        imageUrl,
         author: { connect: { id: userId } },
       },
       select: {
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
         author: {
           select: {
             username: true,
+            profile_picture : true
           },
         },
       },
