@@ -4,16 +4,15 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for:
+     * - The homepage "/"
      * - api (API routes)
-     * - about (about page)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - "/" (homepage)
-     */                                           
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-    '/((?!^/$).*)'  // Explicitly exclude the homepage "/"
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|^$).*)',
   ],
 };
 
 export default withMiddlewareAuthRequired();
+
