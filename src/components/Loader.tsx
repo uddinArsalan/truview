@@ -2,9 +2,12 @@ import React from "react";
 
 const Loader = () => {
   return (
-    <div className="bg-white min-h-screen flex items-center justify-center z-50">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
+    <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-white min-h-screen"
+    aria-label="Loading"
+  >
+    <div className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent border-primary"></div>
+  </div>
   );
 };
 

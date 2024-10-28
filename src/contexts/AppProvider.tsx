@@ -75,7 +75,7 @@ function AppProvider({ children }: PropsWithChildren) {
       }}
     >
       {children}
-      <Toaster />
+      <Toaster position="bottom-center" />
       {isLoading && <Loader />}
     </AppContext.Provider>
   );

@@ -109,6 +109,8 @@ const CreatePostDialog = () => {
                     src={previewURL}
                     alt="Preview"
                     className="w-full h-full object-cover rounded-lg"
+                    width={56}
+                    height={56}
                   />
                 </div>
               ) : selectedFile?.type.startsWith("video/") ? (
