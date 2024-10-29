@@ -17,6 +17,7 @@ const Navbar = () => {
           <Link href="/" className="font-bold text-xl">
             TRUVIEW
           </Link>
+          <MobileNavigation />
 
           <div className="hidden md:flex items-center space-x-1">
             {navigationItems.map((item) => (
@@ -47,8 +48,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-      <MobileNavigation />
     </nav>
   );
 };

@@ -10,7 +10,7 @@ export async function getPosts(context: {
       `/api/posts?limit=${POSTS_PER_PAGE}&cursor=${context.pageParam || ''}`
     );
 
-    if (res.statusText !== "OK") throw new Error("Failed to load posts.");
+    if (res.status !== 200) throw new Error("Failed to load posts.");
     return res.data.posts as GetPostResult[];
   } catch (error) {
     console.log(error, "Error fetching posts.");
