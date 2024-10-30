@@ -25,7 +25,11 @@ export function useCreatePostMutation({
           axios.post("/api/posts", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           }),
-          { loading: "creating post...", success: "", error: "" }
+          {
+            loading: "creating post...",
+            success: "Posted Successfully",
+            error: "Error creating post",
+          }
         );
         if (response.status !== 200) throw new Error(response.statusText);
         return response.data.post as CreatedPost;

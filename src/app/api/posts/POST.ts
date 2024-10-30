@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
     const file: File | null = formData.get("post-image") as unknown as File;
     const content = formData.get("content") as string;
-    console.log(file,content)
+    console.log(file, content);
     if (!file || !content) {
       return NextResponse.json(
         { error: "Both 'content' and 'post-image' are required." },
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         author: {
           select: {
             username: true,
-            profile_picture : true
+            profile_picture: true,
           },
         },
       },

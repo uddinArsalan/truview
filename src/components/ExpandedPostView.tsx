@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/src/components/ui/avatar";
 import { Heart, MessageCircle, Send, MoreVertical } from "lucide-react";
-import { usePostLikesMutations } from '../hooks/mutations/usePostLikesMutations';
+import { usePostLikesMutations } from "../hooks/mutations/usePostLikesMutations";
 import { Input } from "@/src/components/ui/input";
-import { GetPostResult } from '../types/definition';
+import { GetPostResult } from "../types/definition";
 import Image from "next/image";
-import CommentSection from './CommentSection';
-import { useCommentPostMutation } from '../hooks/mutations/useCommentMutation';
+import CommentSection from "./CommentSection";
+import { useCommentPostMutation } from "../hooks/mutations/useCommentMutation";
 
-const ExpandedPostView = ({ 
-  post, 
-  isOpen, 
-  onClose 
-}: { 
+const ExpandedPostView = ({
+  post,
+  isOpen,
+  onClose,
+}: {
   post: GetPostResult;
   isOpen: boolean;
   onClose: () => void;
 }) => {
   const { likeMutation } = usePostLikesMutations({ postId: post.id });
-  const { commentPostMutation } = useCommentPostMutation({ postId : post.id });
+  const { commentPostMutation } = useCommentPostMutation({ postId: post.id });
   const { _count, author, content, imageUrl, isUserLiked } = post;
 
   const [newComment, setNewComment] = useState("");
-  
+
   const handleLike = () => {
     likeMutation.mutate();
   };
@@ -39,11 +43,10 @@ const ExpandedPostView = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-    <DialogTitle className='hidden'>Post Info</DialogTitle>
-      <DialogContent className="max-w-6xl p-0 h-[90vh] overflow-hidden">
+      <DialogTitle className="hidden">Post Info</DialogTitle>
+      <DialogContent className="max-w-full md:max-w-6xl p-4 md:p-0 h-screen md:h-[90vh] overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-
-          <div className="relative bg-black flex items-center">
+          <div className="relative bg-black flex items-center justify-center">
             <Image
               src={imageUrl}
               alt={`Post by ${author.username}`}
@@ -55,7 +58,6 @@ const ExpandedPostView = ({
           </div>
 
           <div className="flex flex-col h-full bg-white">
-            
             <div className="flex-1 overflow-y-auto">
               <div className="flex gap-3 p-4 border-b">
                 <Avatar className="h-8 w-8">
@@ -63,11 +65,13 @@ const ExpandedPostView = ({
                   <AvatarFallback>{author.username[0]}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <span className="font-semibold text-sm">{author.username}</span>
+                  <span className="font-semibold text-sm">
+                    {author.username}
+                  </span>
                   <p className="text-sm mt-1">{content}</p>
                 </div>
               </div>
-              
+
               <div className="py-1">
                 {post._count.comments > 0 ? (
                   <CommentSection postId={post.id} />
@@ -82,26 +86,27 @@ const ExpandedPostView = ({
             <div className="border-t">
               <div className="p-4">
                 <div className="flex items-center space-x-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLike}
-                  >
+                  <Button variant="ghost" size="sm" onClick={handleLike}>
                     <Heart
                       className={`h-5 w-5 ${
-                        isUserLiked ? "fill-red-500 text-red-500" : "text-gray-500"
+                        isUserLiked
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-500"
                       }`}
                     />
                   </Button>
                 </div>
                 <div className="mt-2">
                   <span className="text-sm font-semibold">
-                    {_count.likes} likes
+                    {post._count.likes} likes
                   </span>
                 </div>
               </div>
-              
-              <form onSubmit={handleSubmitComment} className="px-4 pb-4 flex gap-2">
+
+              <form
+                onSubmit={handleSubmitComment}
+                className="px-4 pb-4 flex gap-2"
+              >
                 <Input
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}

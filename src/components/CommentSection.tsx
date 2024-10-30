@@ -96,7 +96,6 @@ const CommentSection = ({ postId }: { postId: string }) => {
     };
   }, [hasNextPage, isFetching, fetchNextPage]);
 
-  console.log(commentPages);
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto">
