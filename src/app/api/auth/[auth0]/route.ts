@@ -10,4 +10,7 @@ export const GET = handleAuth({
     },
     returnTo: "/",
   }),
+  logout : handleLogout({
+    returnTo : "/"
+  })
 });

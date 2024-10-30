@@ -6,7 +6,7 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/src/components/ui/avatar";
-import { Heart, MessageCircle, Send, MoreVertical } from "lucide-react";
+import { Heart,  Send } from "lucide-react";
 import { usePostLikesMutations } from "../hooks/mutations/usePostLikesMutations";
 import { Input } from "@/src/components/ui/input";
 import { GetPostResult } from "../types/definition";
@@ -44,7 +44,7 @@ const ExpandedPostView = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTitle className="hidden">Post Info</DialogTitle>
-      <DialogContent className="max-w-full md:max-w-6xl p-4 md:p-0 h-screen md:h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-full md:max-w-6xl p-4 md:p-0 h-screen md:h-[90vh] overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 h-full">
           <div className="relative bg-black flex items-center justify-center">
             <Image
@@ -57,7 +57,7 @@ const ExpandedPostView = ({
             />
           </div>
 
-          <div className="flex flex-col h-full bg-white">
+          <div className="flex flex-col h-full overflow-y-auto bg-white">
             <div className="flex-1 overflow-y-auto">
               <div className="flex gap-3 p-4 border-b">
                 <Avatar className="h-8 w-8">
