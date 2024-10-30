@@ -17,22 +17,21 @@ import {
   AvatarImage,
 } from "@/src/components/ui/avatar";
 import { Badge } from "@/src/components/ui/badge";
+import ExpandedPostView from "./ExpandedPostView";
 
 const FeedPost = ({ post }: { post: GetPostResult }) => {
   const { likeMutation } = usePostLikesMutations({ postId: post.id });
+  const [isExpanded, setIsExpanded] = useState(false);
   const { _count, author, content, imageUrl, isUserLiked } = post;
-  const [comments, setComments] = useState(0);
 
   const handleLike = () => {
     likeMutation.mutate();
   };
 
-  const handleComment = () => {
-    setComments(comments + 1);
-  };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto hover:shadow-lg transition-shadow duration-200">
+    <>
+    <Card className="w-full max-w-2xl mx-auto hover:shadow-lg transition-shadow duration-200" onClick={() => setIsExpanded(true)}>
       <CardHeader className="p-4 flex flex-row items-center space-x-4">
         <Avatar>
           <AvatarImage
@@ -69,7 +68,6 @@ const FeedPost = ({ post }: { post: GetPostResult }) => {
             variant="ghost"
             size="sm"
             onClick={handleLike}
-            // className="hover:bg-red-50"
           >
             <Heart
               className={`h-5 w-5 mr-1 ${
@@ -78,18 +76,26 @@ const FeedPost = ({ post }: { post: GetPostResult }) => {
             />
             <span className="text-sm">{_count.likes}</span>
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleComment}
-            // className="hover:bg-blue-50"
-          >
-            <MessageCircle className="h-5 w-5 mr-1 text-gray-500" />
-            <Badge variant="secondary">{comments}</Badge>
-          </Button>
+          <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(true);
+              }}
+            >
+              <MessageCircle className="h-5 w-5 mr-1 text-gray-500" />
+              <Badge variant="secondary">{_count.comments}</Badge>
+            </Button>
         </div>
       </CardFooter>
     </Card>
+    <ExpandedPostView
+        post={post}
+        isOpen={isExpanded}
+        onClose={() => setIsExpanded(false)}
+      />
+    </>
   );
 };
 

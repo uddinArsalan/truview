@@ -1,4 +1,4 @@
-import { CreatedPost, GetPostResult } from "@/src/types/definition";
+import { GetPostResult } from "@/src/types/definition";
 import {
   useQueryClient,
   useMutation,
@@ -14,7 +14,7 @@ export function usePostLikesMutations({ postId }: { postId: string }) {
     mutationFn: async () => {
       try {
         const response = await axios.post(`/api/posts/${postId}/like`);
-        if (!(response.statusText === "OK")) {
+        if (response.status !== 200) {
           /**
            * No need to throw an error when there is a 409 conflict.
            * Why? Trying to like an already liked post should not

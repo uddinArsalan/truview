@@ -16,7 +16,7 @@ export function useProfileUpdateMutation({ userId }: { userId: string }) {
           }),
           { loading: "Updating User Profile", success: "", error: "" }
         );
-        if (!(res.statusText === "OK")) {
+        if (res.status !== 200) {
           throw new Error(res.statusText);
         }
 

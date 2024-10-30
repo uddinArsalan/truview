@@ -58,7 +58,9 @@ function AppProvider({ children }: PropsWithChildren) {
       }
     },
     enabled: !!user?.sub,
-    staleTime: 5 * 60 * 1000,
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const isLoading =

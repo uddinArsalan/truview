@@ -16,15 +16,21 @@ export async function POST(
     const { postId } = await params;
     const userId = session.user.sub;
 
-    const post = await prisma.comment.create({
+    const commentCreated = await prisma.comment.create({
       data: {
         content,
         user: { connect: { auth0Id: userId } },
         post: { connect: { id: postId } },
       },
+      select: {
+        id: true,
+        createdAt: true,
+        content: true,
+        user: { select: { username: true, profile_picture: true } },
+      },
     });
 
-    return NextResponse.json({ post });
+    return NextResponse.json({ comment: commentCreated }, { status: 200 });
   } catch (error) {
     console.error("Error posting comment:", error);
     return NextResponse.json(

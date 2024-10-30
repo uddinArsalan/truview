@@ -14,20 +14,19 @@ export async function GET(
       select: {
         content: true,
         imageUrl: true,
-        author: { select: { username: true } },
+        author: { select: { username: true, profile_picture: true } },
         _count: {
           select: {
             likes: true,
-            comments : true
+            comments: true,
           },
         },
         comments: {
           select: {
             content: true,
-            user: { select: { username: true } },
+            user: { select: { username: true, profile_picture: true } },
           },
           orderBy: { createdAt: "asc" },
-          take: 5,
         },
       },
     });

@@ -9,7 +9,13 @@ import { POSTS_PER_PAGE } from "@/src/constants";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-export function useCreatePostMutation({ formData,closeModal }: { formData: FormData,closeModal : () => void }) {
+export function useCreatePostMutation({
+  formData,
+  closeModal,
+}: {
+  formData: FormData;
+  closeModal: () => void;
+}) {
   const qc = useQueryClient();
   const queryKey = ["posts"];
   const createPostMutation = useMutation({
@@ -21,9 +27,7 @@ export function useCreatePostMutation({ formData,closeModal }: { formData: FormD
           }),
           { loading: "creating post...", success: "", error: "" }
         );
-        if (!(response.statusText === "OK"))
-          throw new Error(response.statusText);
-        // console.log("Successfully posted data to database:", response.data);
+        if (response.status !== 200) throw new Error(response.statusText);
         return response.data.post as CreatedPost;
       } catch (error) {
         console.error("Error posting", error);
@@ -60,12 +64,12 @@ export function useCreatePostMutation({ formData,closeModal }: { formData: FormD
           };
         }
       );
-      closeModal()
+      closeModal();
     },
     onError: (error) => {
       console.log(error);
-      toast.error('Error creating post')
-      closeModal()
+      toast.error("Error creating post");
+      closeModal();
     },
   });
 

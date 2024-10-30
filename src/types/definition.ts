@@ -24,7 +24,7 @@ export interface GetPostResult extends CreatedPost {
   _count: PostCounts;
 }
 
-export interface UserProfileDetails extends User{
+export interface UserProfileDetails extends User {
   noOfPosts?: number;
   _count?: undefined;
   posts: GetPostResult[] | undefined;
@@ -32,8 +32,23 @@ export interface UserProfileDetails extends User{
 
 export interface AppInterface {
   userData: User | undefined;
-  isLoggedIn : boolean;
-  startLoader : () => string;
-  markLoadingComplete : (loaderId : string) => void;
-  isLoading : boolean;
+  isLoggedIn: boolean;
+  startLoader: () => string;
+  markLoadingComplete: (loaderId: string) => void;
+  isLoading: boolean;
+}
+
+export interface CommentsResponse {
+  id : string;
+  user: AuthorDetails;
+  content: string;
+  createdAt : Date;
+}
+
+export interface PostWithComments {
+  imageUrl: string;
+  content: string;
+  comments: CommentsResponse[];
+  author: AuthorDetails
+  _count: PostCounts;
 }
